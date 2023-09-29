@@ -5,6 +5,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @SpringBootApplication
 public class DatabaseReader implements CommandLineRunner {
@@ -12,9 +14,20 @@ public class DatabaseReader implements CommandLineRunner {
     @Autowired
     private TaskRepository taskRepository;
 
+    public int periodInSeconds = 15;
+
     @Override
     public void run(String... args) {
-        readData();
+        Timer timer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                readData();
+            }
+        };
+
+        timer.scheduleAtFixedRate(timerTask, 0, periodInSeconds * 1000);
+
     }
 
     void readData() {
